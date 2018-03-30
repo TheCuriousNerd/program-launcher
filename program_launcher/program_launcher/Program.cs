@@ -18,7 +18,7 @@ namespace program_launcher
 
 
             bool flag_run = false;
-            string programName = string.Empty;
+            List<string> programNames = new List<string>();
 
 
             foreach (string arg in args)
@@ -36,7 +36,7 @@ namespace program_launcher
                 }
                 else
                 {
-                    programName = arg;
+                    programNames.Add(arg);
                 }
 
                 #endregion
@@ -49,22 +49,37 @@ namespace program_launcher
             bool program_loop = true;
             while (program_loop)
             {
-                if ((flag_run = true) && (!String.IsNullOrEmpty(programName)))
+                if ((flag_run == true))
                 {
-                    run_program(programName);
+                    run_program(programNames);
                     program_loop = false;
-                    break;
+                    
                 }
 
+                
+                string inputText = string.Empty;
+                string[] parsedText = new string[0];
 
-                string inputText = Console.ReadLine();
-                string[] parsedText = utilities.parse_string_spaces(inputText);
+                if (program_loop == true)
+                {
+                    inputText = Console.ReadLine();
+                    parsedText = utilities.parse_string_spaces(inputText);
+                }      
+
 
                 if ((parsedText[0].Equals("run")) && (parsedText.Length == 2))
                 {
-                    programName = parsedText[1];
+                    List<string> programList = new List<string>();
+                    foreach (string name in parsedText)
+                    {
+                        if (!name.Equals("run"))
+                        {
+                            programList.Add(name);
+                        }
+                    }
 
-                    run_program(programName);
+
+                    run_program(programList);
 
                     program_loop = false;
                 }
@@ -92,12 +107,36 @@ namespace program_launcher
         }
 
 
-        static public void run_program(string program)
+        static public void run_program(List<string> programsToRun)
         {
 
-            var p = new Process();
-            p.StartInfo.FileName = program;
-            p.Start();
+            foreach (string name in programsToRun)
+            {
+                bool failBool = false;
+
+                try
+                {
+                    var p = new Process();
+                    p.StartInfo.FileName = name;
+                    p.Start();
+
+                }
+                catch (Exception e)
+                {
+                    failBool = true;
+                    Console.WriteLine(String.Concat("Error Launching: ", name, "\r\n",e.ToString()));
+                }
+                finally
+                {
+                    if (failBool == false)
+                    {
+                        Console.WriteLine(String.Concat("Launched: ", name));
+
+                    }
+
+                }
+            }
+
 
         }
 
