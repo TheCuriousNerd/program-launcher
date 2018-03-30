@@ -53,10 +53,10 @@ namespace program_launcher
                 {
                     run_program(programNames);
                     program_loop = false;
-                    
+
                 }
 
-                
+
                 string inputText = string.Empty;
                 string[] parsedText = new string[0];
 
@@ -64,44 +64,44 @@ namespace program_launcher
                 {
                     inputText = Console.ReadLine();
                     parsedText = utilities.parse_string_spaces(inputText);
-                }      
 
 
-                if ((parsedText[0].Equals("run")) && (parsedText.Length == 2))
-                {
-                    List<string> programList = new List<string>();
-                    foreach (string name in parsedText)
+
+                    if ((parsedText[0].Equals("run")) && (parsedText.Length >= 2))
                     {
-                        if (!name.Equals("run"))
+                        List<string> programList = new List<string>();
+                        foreach (string name in parsedText)
                         {
-                            programList.Add(name);
+                            if (!name.Equals("run"))
+                            {
+                                programList.Add(name);
+                            }
                         }
+
+
+                        run_program(programList);
+
+                        program_loop = false;
+                    }
+
+                    if (parsedText[0].Equals("help"))
+                    {
+                        Console.WriteLine("======================================\r\nCommand List\r\n======================================");
+                        Console.WriteLine("help\r\n This will diplay this command list\r\n------");
+                        Console.WriteLine("run {program.name}\r\nThis will run the selected program\r\n------");
+                        Console.WriteLine("exit | quit | stop\r\n This quit the program\r\n------");
+
+                        Console.WriteLine("\r\n======================================\r\n");
+                    }
+
+                    if ((parsedText[0].Equals("exit")) || (parsedText[0].Equals("quit")) || (parsedText[0].Equals("stop")))
+                    {
+                        program_loop = false;
+                        break;
                     }
 
 
-                    run_program(programList);
-
-                    program_loop = false;
                 }
-
-                if (parsedText[0].Equals("help"))
-                {
-                    Console.WriteLine("======================================\r\nCommand List\r\n======================================");
-                    Console.WriteLine("help\r\n This will diplay this command list\r\n------");
-                    Console.WriteLine("run {program.name}\r\nThis will run the selected program\r\n------");
-                    Console.WriteLine("exit | quit | stop\r\n This quit the program\r\n------");
-
-                    Console.WriteLine("\r\n======================================\r\n");
-                }
-
-                if ((parsedText[0].Equals("exit")) || (parsedText[0].Equals("quit")) || (parsedText[0].Equals("stop")))
-                {
-                    program_loop = false;
-                    break;
-                }
-
-
-
 
             }
         }
@@ -117,6 +117,15 @@ namespace program_launcher
                 try
                 {
                     var p = new Process();
+
+                    //Team ViewerCheck
+                    if (name.ToLower().Equals("teamviewer.exe"))
+                    {
+                        p.StartInfo.WorkingDirectory = "C:\\Program Files (x86)\\TeamViewer";
+                    }
+
+
+
                     p.StartInfo.FileName = name;
                     p.Start();
 
@@ -124,7 +133,7 @@ namespace program_launcher
                 catch (Exception e)
                 {
                     failBool = true;
-                    Console.WriteLine(String.Concat("Error Launching: ", name, "\r\n",e.ToString()));
+                    Console.WriteLine(String.Concat("Error Launching: ", name, "\r\n", e.ToString()));
                 }
                 finally
                 {
