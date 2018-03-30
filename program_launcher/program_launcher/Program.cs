@@ -148,7 +148,41 @@ namespace program_launcher
 
 
         }
+        static public void run_program(List<string> programsToRun, string DirectoryToUse)
+        {
 
+            foreach (string name in programsToRun)
+            {
+                bool failBool = false;
+
+                try
+                {
+                    var p = new Process();
+
+                    p.StartInfo.WorkingDirectory = DirectoryToUse;
+
+                    p.StartInfo.FileName = name;
+                    p.Start();
+
+                }
+                catch (Exception e)
+                {
+                    failBool = true;
+                    Console.WriteLine(String.Concat("Error Launching: ", name, "\r\n", e.ToString()));
+                }
+                finally
+                {
+                    if (failBool == false)
+                    {
+                        Console.WriteLine(String.Concat("Launched: ", name));
+
+                    }
+
+                }
+            }
+
+
+        }
 
     }
 
